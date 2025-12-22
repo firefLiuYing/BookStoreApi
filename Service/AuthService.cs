@@ -44,20 +44,35 @@ public class AuthService(BookStoreContext  context)
         return response;
     }
 
-    // public async Task<ApiResponse<UserInfo>> Login(LoginRequest request)
-    // {
-    //     var response = new ApiResponse<UserInfo>();
-    //     if (request?.Nickname == null || request?.Password == null)
-    //     {
-    //         response.Success = false;
-    //         response.Message = "用户名或密码为空";
-    //         response.Data=null;
-    //         return response;
-    //     }
-    //     
-    //     var customer = await context.Customer.FirstOrDefaultAsync(c => c.NickName == request.Nickname);
-    //     if()
-    // }
+    public async Task<ApiResponse<UserInfo>> Login(LoginRequest request)
+    {
+        var response = new ApiResponse<UserInfo>();
+        if (request?.Nickname == null || request?.Password == null)
+        {
+            response.Success = false;
+            response.Message = "用户名或密码为空";
+            response.Data=null;
+            return response;
+        }
+        
+        var customer = await context.Customer.FirstOrDefaultAsync(c => c.NickName == request.Nickname);
+        if (customer == null||customer.Password!=request.Password)
+        {
+            response.Success = false;
+            response.Message = "账号或密码错误";
+            response.Data = null;
+            return response;
+        }
+        
+        response.Success = true;
+        response.Message = "登录成功";
+        response.Data = new()
+        {
+            Id = customer.Id,
+            Name = customer.Name,
+        };
+        return response;
+    }
 }
 
 public class LoginRequest

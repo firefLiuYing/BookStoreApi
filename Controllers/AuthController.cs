@@ -16,4 +16,12 @@ public class AuthController(BookStoreContext  context):ControllerBase
         if(result.Success) return Ok(result);
         return BadRequest(result);
     }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginRequest request)
+    {
+        var result = await _authService.Login(request);
+        if(result.Success) return Ok(result);
+        return BadRequest(result);
+    }
 }
