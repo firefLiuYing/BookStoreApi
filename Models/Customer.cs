@@ -8,7 +8,7 @@ public class Customer
     public string Name { get; set; }
     public string? Address { get; set; }
     public decimal Balance { get; set; }
-    public int Credit{get; set;}
+    public int Credit { get; set; } = 1;
     public string? Email { get; set; }
     public string? Phone { get; set; }
 }

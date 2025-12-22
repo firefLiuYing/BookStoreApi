@@ -1,6 +1,56 @@
-﻿namespace BookStoreApi.Service;
+﻿using BookStoreApi.Models;
+using BookStoreApi.Utils;
+using Microsoft.EntityFrameworkCore;
 
-public class AuthService
+namespace BookStoreApi.Service;
+
+public class AuthService(BookStoreContext  context)
 {
-    
+    public async Task<ApiResponse<UserInfo>> Register(RegisterRequest register)
+    {
+        var response=new ApiResponse<UserInfo>();
+        if (register?.Nickname == null || register?.Password == null)
+        {
+            response.Success = false;
+            response.Message = "用户名或密码为空";
+            response.Data=null;
+            return response;
+        }
+
+        var customer = await context.Customer.FirstOrDefaultAsync(c => c.NickName == register.Nickname);
+        if (customer != null)
+        {
+            response.Success = false;
+            response.Message = "用户名已存在";
+            response.Data = null;
+            return response;
+        }
+
+        customer = new()
+        {
+            NickName = register.Nickname,
+            Password = register.Password,
+            Name = register.Nickname,
+        };
+        context.Customer.Add(customer);
+        await context.SaveChangesAsync();
+        response.Success = true;
+        response.Message = "注册成功";
+        response.Data = new ()
+        {
+            Name = register.Nickname,
+        };
+        return response;
+    }
+}
+
+public class RegisterRequest
+{
+    public string Nickname { get; set; }
+    public string Password { get; set; }
+}
+
+public class UserInfo
+{
+    public string Name { get; set; }
 }
