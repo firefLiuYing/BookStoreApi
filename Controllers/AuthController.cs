@@ -10,7 +10,7 @@ public class AuthController(BookStoreContext  context):ControllerBase
 {
     private readonly AuthService _authService=new(context);
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody]RegisterRequest request)
+    public async Task<IActionResult> Register([FromBody]AuthService.RegisterRequest request)
     {
         var result = await _authService.Register(request);
         if(result.Success) return Ok(result);
@@ -18,7 +18,7 @@ public class AuthController(BookStoreContext  context):ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request)
+    public async Task<IActionResult> Login([FromBody] AuthService.LoginRequest request)
     {
         var result = await _authService.Login(request);
         if(result.Success) return Ok(result);

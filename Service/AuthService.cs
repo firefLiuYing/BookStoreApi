@@ -73,21 +73,21 @@ public class AuthService(BookStoreContext  context)
         };
         return response;
     }
-}
+    
+    public class LoginRequest
+    {
+        public string Nickname { get; set; }
+        public string Password { get; set; }
+    }
+    public class RegisterRequest
+    {
+        public string Nickname { get; set; }
+        public string Password { get; set; }
+    }
 
-public class LoginRequest
-{
-    public string Nickname { get; set; }
-    public string Password { get; set; }
-}
-public class RegisterRequest
-{
-    public string Nickname { get; set; }
-    public string Password { get; set; }
-}
-
-public class UserInfo
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
+    public class UserInfo
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
 }
