@@ -6,10 +6,10 @@ namespace BookStoreApi.Service;
 
 public class AuthService(BookStoreContext  context)
 {
-    public async Task<ApiResponse<UserInfo>> Register(RegisterRequest register)
+    public async Task<ApiResponse<UserInfo>> Register(RegisterRequest request)
     {
         var response=new ApiResponse<UserInfo>();
-        if (register?.Nickname == null || register?.Password == null)
+        if (request?.Nickname == null || request?.Password == null)
         {
             response.Success = false;
             response.Message = "用户名或密码为空";
@@ -17,7 +17,7 @@ public class AuthService(BookStoreContext  context)
             return response;
         }
 
-        var customer = await context.Customer.FirstOrDefaultAsync(c => c.NickName == register.Nickname);
+        var customer = await context.Customer.FirstOrDefaultAsync(c => c.NickName == request.Nickname);
         if (customer != null)
         {
             response.Success = false;
@@ -28,9 +28,9 @@ public class AuthService(BookStoreContext  context)
 
         customer = new()
         {
-            NickName = register.Nickname,
-            Password = register.Password,
-            Name = register.Nickname,
+            NickName = request.Nickname,
+            Password = request.Password,
+            Name = request.Nickname,
         };
         context.Customer.Add(customer);
         await context.SaveChangesAsync();
@@ -38,12 +38,33 @@ public class AuthService(BookStoreContext  context)
         response.Message = "注册成功";
         response.Data = new ()
         {
-            Name = register.Nickname,
+            Id = customer.Id,
+            Name = customer.Name,
         };
         return response;
     }
+
+    // public async Task<ApiResponse<UserInfo>> Login(LoginRequest request)
+    // {
+    //     var response = new ApiResponse<UserInfo>();
+    //     if (request?.Nickname == null || request?.Password == null)
+    //     {
+    //         response.Success = false;
+    //         response.Message = "用户名或密码为空";
+    //         response.Data=null;
+    //         return response;
+    //     }
+    //     
+    //     var customer = await context.Customer.FirstOrDefaultAsync(c => c.NickName == request.Nickname);
+    //     if()
+    // }
 }
 
+public class LoginRequest
+{
+    public string Nickname { get; set; }
+    public string Password { get; set; }
+}
 public class RegisterRequest
 {
     public string Nickname { get; set; }
@@ -52,5 +73,6 @@ public class RegisterRequest
 
 public class UserInfo
 {
+    public int Id { get; set; }
     public string Name { get; set; }
 }
