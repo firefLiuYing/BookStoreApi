@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookStoreApi.Controllers;
 
-[Route("api/auth/[controller]")]
+[Route("api/[controller]")]
 [ApiController]
 public class AuthController(BookStoreContext  context):ControllerBase
 {
