@@ -56,11 +56,11 @@ public class BookService(BookStoreContext context)
 
     public class QueryResponse
     {
-        public readonly List<BookInfo> Books  = new();
+        public List<BookInfo> Books { get; set; }
 
         public QueryResponse(IEnumerable<BookInfo> books)
         {
-            Books.Clear();
+            Books=new();
             Books.AddRange(books);
         }
     }
