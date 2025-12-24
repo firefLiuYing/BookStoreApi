@@ -8,13 +8,13 @@ namespace BookStoreApi.Controllers;
 [ApiController]
 public class BookController(BookStoreContext context) : ControllerBase
 {
-    private readonly BookMangeSevice _bookMangeSevice = new(context);
+    private readonly BookMangeSevice _bookManageService = new(context);
 
     [HttpPost("query")]
     public async Task<IActionResult> Query()
     {
-        Console.WriteLine("_bookMangeSevice.query 被调用");
-        var result = await _bookMangeSevice.query();
+        Console.WriteLine("_bookManageService.query 被调用");
+        var result = await _bookManageService.query();
         if (result.Success) return Ok(result);
         return BadRequest(result);
     }
@@ -22,8 +22,8 @@ public class BookController(BookStoreContext context) : ControllerBase
     [HttpPost("update")]
     public async Task<IActionResult> Update([FromBody]List<BookMangeSevice.QueryDto> queryDto)
     {
-        Console.WriteLine("_bookMangeSevice.update 被调用");
-        var result = await _bookMangeSevice.update(queryDto);
+        Console.WriteLine("_bookManageService.update 被调用");
+        var result = await _bookManageService.update(queryDto);
         if (result.Success) return Ok(result);
         return BadRequest(result);
     }
