@@ -1,6 +1,6 @@
 ﻿using BookStoreApi.Models;
+using BookStoreApi.Service;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BookStoreApi.Controllers;
 
@@ -8,10 +8,23 @@ namespace BookStoreApi.Controllers;
 [ApiController]
 public class BookController(BookStoreContext context) : ControllerBase
 {
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Book>>> GetBooklist()
+    private readonly BookMangeSevice _bookMangeSevice = new(context);
+
+    [HttpPost("query")]
+    public async Task<IActionResult> Query()
     {
-        var books = await context.Book.ToListAsync();
-        return Ok(books);
+        Console.WriteLine("_bookMangeSevice.query 被调用");
+        var result = await _bookMangeSevice.query();
+        if (result.Success) return Ok(result);
+        return BadRequest(result);
+    }
+    
+    [HttpPost("update")]
+    public async Task<IActionResult> Update([FromBody]List<BookMangeSevice.QueryDto> queryDto)
+    {
+        Console.WriteLine("_bookMangeSevice.update 被调用");
+        var result = await _bookMangeSevice.update(queryDto);
+        if (result.Success) return Ok(result);
+        return BadRequest(result);
     }
 }
