@@ -9,9 +9,18 @@ namespace BookStoreApi.Controllers;
 public class BookController(BookStoreContext context) : ControllerBase
 {
     private readonly BookMangeSevice _bookManageService = new(context);
+    private readonly BookService _bookService = new(context);
 
-    [HttpPost("query")]
-    public async Task<IActionResult> Query()
+    [HttpPost("Query")]
+    public async Task<IActionResult> Query([FromBody] BookService.QueryRequest request)
+    {
+        var result = await _bookService.Query(request);
+        if (result.Success) return Ok(result);
+        return BadRequest(result);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Get()
     {
         Console.WriteLine("_bookManageService.query 被调用");
         var result = await _bookManageService.query();
