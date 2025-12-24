@@ -4,37 +4,45 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookStoreApi.Service;
 
-public class BookMangeSevice(BookStoreContext  context)
+public class BookManageSevice(BookStoreContext  context)
 {
     public async Task<ApiResponse<List<QueryDto>>> query()
     {
         var response = new ApiResponse<List<QueryDto>>();
-        
-        var list = await context.Book
-            .Join(
-                context.BookInventory,                // 连接 OrderBook 表
-                b => b.Id,                        // Order 表主键
-                bi => bi.BookId,                 // OrderBook 外键
-                (b, bi) => new QueryDto 
-                {
-                    BookId = b.Id,
-                    ISBN = b.ISBN,
-                    Name = b.Name,
-                    Author = b.Author,
-                    Publisher = b.Publisher,
-                    Price = b.Price,
-                    KeyWord = b.Keyword,
-                    Supplier = b.Supplier,
-                    Catalog = b.Catalog,
-                    Cover = b.Cover,
-                    inventory = bi.Inventory
-                }
-            )
-            .OrderByDescending(x => x.BookId)  // 按订单日期倒序
-            .ToListAsync();
-
-        response.Success = true;
-        response.Data = list;
+        try
+        {
+            var list = await context.Book
+                .Join(
+                    context.BookInventory,                // 连接 OrderBook 表
+                    b => b.Id,                        // Order 表主键
+                    bi => bi.BookId,                 // OrderBook 外键
+                    (b, bi) => new QueryDto 
+                    {
+                        bookId = b.Id,
+                        isbn = b.ISBN,
+                        name = b.Name,
+                        author = b.Author,
+                        publisher = b.Publisher,
+                        price = b.Price,
+                        keyWord = b.Keyword ?? " ",
+                        supplier = b.Supplier ?? " ",
+                        catalog = b.Catalog ?? " ",
+                        cover = b.Cover ?? " ",
+                        inventory = bi.Inventory
+                    }
+                )
+                .OrderBy(x => x.bookId)  // 按订单日期倒序
+                .ToListAsync();
+            
+            response.Success = true;
+            response.Data = list;
+        }
+        catch (Exception ex)
+        {
+            // 捕获数据库查询异常
+            response.Success = false;
+            response.Message = "发的撒娇occurred while fetching books: " + ex.Message;
+        }
 
         return response;
     }
@@ -43,7 +51,7 @@ public class BookMangeSevice(BookStoreContext  context)
     {
         var response = new ApiResponse<List<QueryDto>>();
         
-        var bookIds = books.Select(b => b.BookId).ToList();
+        var bookIds = books.Select(b => b.bookId).ToList();
 
         var dbBooks = await context.Book
             .Where(b => bookIds.Contains(b.Id))
@@ -55,21 +63,21 @@ public class BookMangeSevice(BookStoreContext  context)
 
         foreach (var dbBook in dbBooks)
         {
-            var dto = books.First(b => b.BookId == dbBook.Id);
-            dbBook.ISBN = dto.ISBN;
-            dbBook.Name = dto.Name;
-            dbBook.Author = dto.Author;
-            dbBook.Publisher = dto.Publisher;
-            dbBook.Price = dto.Price;
-            dbBook.Keyword = dto.KeyWord;
-            dbBook.Supplier = dto.Supplier;
-            dbBook.Cover = dto.Cover;
-            dbBook.Catalog = dto.Catalog;
+            var dto = books.First(b => b.bookId == dbBook.Id);
+            dbBook.ISBN = dto.isbn;
+            dbBook.Name = dto.name;
+            dbBook.Author = dto.author;
+            dbBook.Publisher = dto.publisher;
+            dbBook.Price = dto.price;
+            dbBook.Keyword = dto.keyWord;
+            dbBook.Supplier = dto.supplier;
+            dbBook.Cover = dto.cover;
+            dbBook.Catalog = dto.catalog;
         }
         
         foreach (var dbBookInventory in dbBookInventorys)
         {
-            var dto = books.First(b => b.BookId == dbBookInventory.BookId);
+            var dto = books.First(b => b.bookId == dbBookInventory.BookId);
             dbBookInventory.Inventory = dto.inventory;
         }
 
@@ -82,16 +90,16 @@ public class BookMangeSevice(BookStoreContext  context)
 
     public class QueryDto
     {
-        public int BookId { get; set; }
-        public string ISBN { get; set; }
-        public string Name { get; set; }
-        public string Author { get; set; }
-        public string Publisher { get; set; }
-        public decimal Price { get; set; }
-        public string KeyWord { get; set; }
-        public string Supplier { get; set; }
-        public string Catalog { get; set; }
-        public string Cover { get; set; }
+        public int bookId { get; set; }
+        public string isbn { get; set; }
+        public string name { get; set; }
+        public string author { get; set; }
+        public string publisher { get; set; }
+        public decimal price { get; set; }
+        public string keyWord { get; set; }
+        public string supplier { get; set; }
+        public string catalog { get; set; }
+        public string cover { get; set; }
         public int inventory{ get; set; }
     }
 }
