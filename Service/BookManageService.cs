@@ -79,12 +79,68 @@ public class BookManageSevice(BookStoreContext  context)
         {
             var dto = books.First(b => b.bookId == dbBookInventory.BookId);
             dbBookInventory.Inventory = dto.inventory;
-        }
+        } 
 
         await context.SaveChangesAsync();
         response.Success = true;
         response.Data = null;
 
+        return response;
+    }
+
+    public async Task<ApiResponse<QueryDto> >add(QueryDto newBook)
+    {
+        var response = new ApiResponse<QueryDto>();
+
+        var addBook = new Book()
+        {
+            Name = newBook.name,
+            Author = newBook.author,
+            Publisher = newBook.publisher,
+            Price = newBook.price,
+            Catalog = newBook.catalog,
+            Cover = newBook.cover,
+            ISBN = newBook.isbn,
+            Keyword = newBook.keyWord,
+            Supplier = newBook.supplier
+        };
+        context.Book.Add(addBook);
+        await context.SaveChangesAsync();
+
+        var addBookInventory = new BookInventory()
+        {
+            BookId = addBook.Id,
+            Inventory = newBook.inventory
+        };
+        
+
+        context.BookInventory.Add(addBookInventory);
+        await context.SaveChangesAsync();
+        response.Success = true;
+        response.Data = null;
+        
+        return response;
+    }
+    
+    public async Task<ApiResponse<QueryDto> > delete (int bookId)
+    {
+        var response = new ApiResponse<QueryDto>();
+        
+        var book = await context.Book.FindAsync(bookId);
+        
+        if (book == null)
+        {
+            response.Success = false;
+            response.Message = "不存在该书籍.";
+            return response;
+        }
+        
+        context.Book.Remove(book);
+        await context.SaveChangesAsync();
+
+        response.Success = true;
+        response.Data = null;
+        
         return response;
     }
 

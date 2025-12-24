@@ -37,5 +37,22 @@ public class BookController(BookStoreContext context) : ControllerBase
         return BadRequest(result);
     }
     
+    [HttpPost("add")]
+    public async Task<IActionResult> Add([FromBody]BookManageSevice.QueryDto queryDto)
+    {
+        Console.WriteLine("_bookManageService.update 被调用");
+        var result = await _bookManageService.add(queryDto);
+        if (result.Success) return Ok(result);
+        return BadRequest(result);
+    }
+    
+    [HttpPost("delete")]
+    public async Task<IActionResult> Delete([FromBody]int bookId)
+    {
+        Console.WriteLine("_bookManageService.update 被调用");
+        var result = await _bookManageService.delete(bookId);
+        if (result.Success) return Ok(result);
+        return BadRequest(result);
+    }
     
 }
