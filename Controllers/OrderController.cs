@@ -1,4 +1,5 @@
 ﻿using BookStoreApi.Models;
+using BookStoreApi.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,11 +7,16 @@ namespace BookStoreApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class OrderController(BookStoreContext context):ControllerBase
+
+public class OrderController(BookStoreContext context): ControllerBase
 {
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Order>>> Get()
+    private readonly BookOrderService _bookOrderService = new(context);
+    [HttpPost("order")]
+    public async Task<IActionResult> order ([FromBody]BookOrderService.OrderInfo orderInfo)
     {
-        return await context.Order.ToListAsync();
+        Console.WriteLine("BookOrderService.OrderInfo 被调用");
+        var result = await _bookOrderService.order(orderInfo);
+        if(result.Success) return Ok(result);
+        return BadRequest(result);
     }
 }
