@@ -9,8 +9,9 @@ namespace BookStoreApi.Controllers;
 public class BookController(BookStoreContext context) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
+    public async Task<ActionResult<IEnumerable<Book>>> GetBooklist()
     {
-        return await context.Book.ToListAsync();
+        var books = await context.Book.ToListAsync();
+        return Ok(books);
     }
 }

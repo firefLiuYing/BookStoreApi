@@ -85,7 +85,7 @@ public class BookOrderService(BookStoreContext  context)
                     Address = customer.Address,
                     CustomerId = orderInfo.CustomerId,
                     Paid = false,
-                    Shipped = true,
+                    Shipped = false,
                     Amount = amount,
                     CreatedTime =  DateTime.Now
                 };
