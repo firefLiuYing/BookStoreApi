@@ -17,7 +17,6 @@ public class PurchaseManageService(BookStoreContext context)
             return response;
         }
         purchase.Arrived = request.Arrived;
-        purchase.CreatedTime = request.CreatedTime;
         response.Success = true;
         response.Message = "更新成功";
         return response;
@@ -45,7 +44,6 @@ public class PurchaseManageService(BookStoreContext context)
     {
         public int Id { get; set; }
         public bool Arrived { get; set; }
-        public DateTime CreatedTime { get; set; }
     }
 
     public class PurchaseQueryResponse
