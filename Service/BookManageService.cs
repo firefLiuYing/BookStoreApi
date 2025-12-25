@@ -122,11 +122,11 @@ public class BookManageSevice(BookStoreContext  context)
         return response;
     }
     
-    public async Task<ApiResponse<QueryDto> > delete (int bookId)
+    public async Task<ApiResponse<QueryDto> > delete (DeleteBookDto deleteBookDto)
     {
         var response = new ApiResponse<QueryDto>();
         
-        var book = await context.Book.FindAsync(bookId);
+        var book = await context.Book.FindAsync(deleteBookDto.bookId);
         
         if (book == null)
         {
@@ -157,5 +157,10 @@ public class BookManageSevice(BookStoreContext  context)
         public string catalog { get; set; }
         public string cover { get; set; }
         public int inventory{ get; set; }
+    }
+    
+    public class DeleteBookDto
+    {
+        public int bookId { get; set; }
     }
 }

@@ -47,12 +47,11 @@ public class BookController(BookStoreContext context) : ControllerBase
     }
     
     [HttpPost("delete")]
-    public async Task<IActionResult> Delete([FromBody]int bookId)
+    public async Task<IActionResult> Delete([FromBody]BookManageSevice.DeleteBookDto deleteDto)
     {
         Console.WriteLine("_bookManageService.update 被调用");
-        var result = await _bookManageService.delete(bookId);
+        var result = await _bookManageService.delete(deleteDto);
         if (result.Success) return Ok(result);
         return BadRequest(result);
     }
-    
 }
