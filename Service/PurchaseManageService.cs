@@ -17,6 +17,7 @@ public class PurchaseManageService(BookStoreContext context)
             return response;
         }
         purchase.Arrived = request.Arrived;
+        await context.SaveChangesAsync();
         response.Success = true;
         response.Message = "更新成功";
         return response;
